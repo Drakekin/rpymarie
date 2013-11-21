@@ -1,0 +1,20 @@
+DEC 0
+DEC 1
+COPY !fib
+DEC 3
+BUBBLE
+ADD
+DEC 3
+CLONE
+DEC 1
+SUB
+COPY
+IFZERO #stop #cont
+POP !stop
+WRITE
+HEX a
+PRINT
+DIE
+DEC 3 !cont
+PUT
+JUMP #fib
