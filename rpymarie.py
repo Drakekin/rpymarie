@@ -3,6 +3,11 @@ from marie import run
 from rutil import read_file
 
 
+def jitpolicy(driver):
+    from rpython.jit.codewriter.policy import JitPolicy
+    return JitPolicy()
+
+
 def entry_point(argv):
     try:
         filename = argv[1]
