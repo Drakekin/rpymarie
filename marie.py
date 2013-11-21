@@ -5,7 +5,8 @@ from vm import VirtualMachine
 def run(source, args):
     program = parse(source)
     args = [int(arg) for arg in args]
-    vm = VirtualMachine(program, list(reversed(args)))
+    args.reverse()
+    vm = VirtualMachine(program, args)
     return vm.mainloop()
 
 
@@ -20,16 +21,12 @@ def parse(source):
             label = "#" + label.strip(" ").lstrip("!")
             labels[label] = str(line_no)
         if len(tokens):
-            num_arguments, instruction = INSTRUCTIONS.get(tokens[0], (-1, lambda: None))
-            arguments = tokens[1:]
-            if num_arguments != len(arguments):
-                raise SyntaxError("Line %s: %s\nSyntax Error.\n%s takes %s arguments, %s given." % (
-                    line_no, line, tokens[0], num_arguments, len(arguments)
-                ))
-            code.append((instruction, arguments))
+            instruction = INSTRUCTIONS.get(tokens[0], lambda vm, arg: None)
+            argument = tokens[1] if tokens[1:] else "0"  # Zero is the default argument
+            code.append((instruction, argument))
     program = []
-    for func, args in code:
-        program.append((func, [labels.get(arg, arg) for arg in args]))
+    for func, arg in code:
+        program.append((func, labels.get(arg, arg)))
     return program
 
 if __name__ == "__main__":

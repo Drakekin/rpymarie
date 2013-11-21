@@ -9,7 +9,8 @@ CLONE
 DEC 1
 SUB
 COPY
-IFZERO #stop #cont
+IFZERO #stop
+JUMP #cont
 POP !stop
 WRITE
 HEX a

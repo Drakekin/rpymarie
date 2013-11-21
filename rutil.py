@@ -11,9 +11,21 @@ except ImportError:
 
         def genrand32(self):
             return cpython_random.randint(0, 2**32-1)
+try:
+    from rpython.rlib.rarithmetic import intmask
+except ImportError:
+    def intmask(n):
+        return int(n)
 from time import time
 
 random = Random(int(time()))
+
+
+def is_hex(char):
+    for x in char.lower():
+        if not x in "0123456789abcdef":
+            return False
+    return True
 
 
 def read_file(filename):
@@ -27,11 +39,6 @@ def read_file(filename):
     return contents
 
 
-def random_integer(min=0, max=None):
-    i = random.genrand32()
-    if max is not None:
-        assert max > min
-        range = max + 1 - min
-        assert range > 0
-        i = i % range + min
-    return i
+def random_integer(n):
+    assert n > 0
+    return intmask(random.genrand32()) % n
