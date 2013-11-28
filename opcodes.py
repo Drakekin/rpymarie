@@ -12,9 +12,10 @@ def register_instruction(instruction):
     return register
 
 
-def instruction_to_string(command, argument=""):
-    string = "%s %s" % (command, argument)
-    return string.strip(" ")
+# This fails the assertion
+# WTF
+def instruction_to_string(pc, program):
+    return str(pc)
 
 
 @register_instruction("DEC")

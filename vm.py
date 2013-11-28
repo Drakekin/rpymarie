@@ -37,6 +37,8 @@ jit_driver = JitDriver(greens=[
 
 
 class VirtualMachine(object):
+    #__immutable_fields__ = ["program[*]"]
+
     def __init__(self, program, stack):
         self.pc = 0
         self.halt = False
