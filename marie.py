@@ -1,4 +1,3 @@
-from opcodes import INSTRUCTIONS, skip
 from vm import VirtualMachine
 
 
@@ -21,7 +20,7 @@ def parse(source):
             label = "#" + label.strip(" ").lstrip("!")
             labels[label] = str(line_no)
         if len(tokens):
-            instruction = INSTRUCTIONS.get(tokens[0], lambda vm, arg: None)
+            instruction = tokens[0]
             argument = tokens[1] if tokens[1:] else "0"  # Zero is the default argument
             code.append((instruction, argument))
     program = []
