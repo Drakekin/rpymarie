@@ -12,16 +12,10 @@ def register_instruction(instruction):
     return register
 
 
-# This fails the assertion
-# WTF
-def instruction_to_string(pc, program):
-    return str(pc)
-
-
 @register_instruction("DEC")
 def DEC(vm, value):
     try:
-        vm.stack.append(int(value))
+        vm.append(int(value))
     except ValueError:
         pass
 
@@ -30,66 +24,61 @@ def DEC(vm, value):
 def HEX(vm, value):
     try:
         if is_hex(value):
-            vm.stack.append(int(value, 16))
+            vm.append(int(value, 16))
     except ValueError:
         pass
-
-
-@register_instruction("STRING")
-def STRING(vm, value):
-    vm.stack = [ord(c) for c in value] + [0] + vm.stack
 
 
 @register_instruction("ASCII")
 def ASCII(vm, value):
     assert len(value) == 1
     value = value[0]
-    vm.stack.append(ord(value))
+    vm.append(ord(value))
 
 
 @register_instruction("PRINT")
 def PRINT(vm, arg):
-    os.write(1, chr(vm.stack.pop()))
+    os.write(1, chr(vm.pop()))
 
 
 @register_instruction("WRITE")
 def WRITE(vm, arg):
-    os.write(1, str(vm.stack.pop()))
+    os.write(1, str(vm.pop()))
 
 
 @register_instruction("ADD")
 def ADD(vm, arg):
-    a = vm.stack.pop()
-    b = vm.stack.pop()
-    vm.stack.append(b + a)
+    a = vm.pop()
+    b = vm.pop()
+    vm.append(b + a)
 
 
 @register_instruction("SUB")
 def SUB(vm, arg):
-    a = vm.stack.pop()
-    b = vm.stack.pop()
-    vm.stack.append(b - a)
+    a = vm.pop()
+    b = vm.pop()
+    vm.append(b - a)
 
 
 @register_instruction("MUL")
 def MUL(vm, arg):
-    a = vm.stack.pop()
-    b = vm.stack.pop()
-    vm.stack.append(b * a)
+    a = vm.pop()
+    b = vm.pop()
+    vm.append(b * a)
 
 
 @register_instruction("DIV")
 def DIV(vm, arg):
-    a = vm.stack.pop()
-    b = vm.stack.pop()
-    vm.stack.append(b / a)
+    a = vm.pop()
+    b = vm.pop()
+    vm.append(b / a)
 
 
 @register_instruction("MOD")
 def MOD(vm, arg):
-    a = vm.stack.pop()
-    b = vm.stack.pop()
-    vm.stack.append(b % a)
+    a = vm.pop()
+    b = vm.pop()
+    vm.append(b % a)
 
 
 @register_instruction("JUMP")
@@ -103,35 +92,35 @@ def JUMP(vm, address):
 
 @register_instruction("IFZERO")
 def IFZERO(vm, then):
-    if vm.stack.pop() == 0:
+    if vm.pop() == 0:
         JUMP(vm, then)
 
 
 @register_instruction("IFPOS")
 def IFPOS(vm, then):
-    if vm.stack.pop() > 0:
+    if vm.pop() > 0:
         JUMP(vm, then)
 
 
 @register_instruction("IFNEG")
 def IFNEG(vm, then):
-    if vm.stack.pop() < 0:
+    if vm.pop() < 0:
         JUMP(vm, then)
 
 
 @register_instruction("COPY")
 def COPY(vm, arg):
-    val = vm.stack.pop()
-    vm.stack.append(val)
-    vm.stack.append(val)
+    val = vm.pop()
+    vm.append(val)
+    vm.append(val)
 
 
 @register_instruction("FLIP")
 def FLIP(vm, arg):
-    a = vm.stack.pop()
-    b = vm.stack.pop()
-    vm.stack.append(a)
-    vm.stack.append(b)
+    a = vm.pop()
+    b = vm.pop()
+    vm.append(a)
+    vm.append(b)
 
 
 @register_instruction("SKIP")
@@ -141,9 +130,9 @@ def SKIP(vm, arg):
 
 @register_instruction("RAND")
 def RAND(vm, arg):
-    n = vm.stack.pop()
+    n = vm.pop()
     value = random_integer(n)
-    vm.stack.append(value)
+    vm.append(value)
 
 
 @register_instruction("DIE")
@@ -153,26 +142,26 @@ def DIE(vm, arg):
 
 @register_instruction("BUBBLE")
 def BUBBLE(vm, arg):
-    n = vm.stack.pop()
-    val = vm.stack[-n]
-    del vm.stack[-n]
-    vm.stack.append(val)
+    n = vm.pop()
+    val = vm.get(-n)
+    vm.delete(-n)
+    vm.append(val)
 
 
 @register_instruction("CLONE")
 def CLONE(vm, arg):
-    n = vm.stack.pop()
-    val = vm.stack[-n]
-    vm.stack.append(val)
+    n = vm.pop()
+    val = vm.get(-n)
+    vm.append(val)
 
 
 @register_instruction("PUT")
 def PUT(vm, arg):
-    n = vm.stack.pop()
-    val = vm.stack.pop()
-    vm.stack[-n] = val
+    n = vm.pop()
+    val = vm.pop()
+    vm.set(-n, val)
 
 
 @register_instruction("POP")
 def POP(vm, arg):
-    vm.stack.pop()
+    vm.pop()
